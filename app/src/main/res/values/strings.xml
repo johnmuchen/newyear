@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">newyear</string>
+    <string name="app_name">2021 新年快樂</string>
+    <string name="title_activity_setup">Setting</string>
+    <string name="title_activity_question">2021 遊戲開始</string>
 </resources>
