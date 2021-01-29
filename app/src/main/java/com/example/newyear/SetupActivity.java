@@ -53,7 +53,6 @@ public class SetupActivity extends AppCompatActivity{
     //    QuestionDB questionDB;
     Button btnNextQuestion;
     Button btnPlayerVisible;
-    Button btnSaveImage;
     OutputStream outputStream;
     SharedPreferences sharedPreferences;
     static String Q_NUM_PLAYER_VISIBILITY = "QVisible";
@@ -61,6 +60,7 @@ public class SetupActivity extends AppCompatActivity{
 
     int question_id;
     LoadQuestionDB loadQuestionDB;
+    int current_question_number=0;
 
 
     @Override
@@ -83,7 +83,6 @@ public class SetupActivity extends AppCompatActivity{
         btnResetQuestions = (Button) findViewById(R.id.btnResetQuestions);
         btnNextQuestion = (Button) findViewById(R.id.btnNextQuestion);
         btnPlayerVisible = (Button) findViewById(R.id.btnPlayerVisible);
-        btnSaveImage = (Button) findViewById(R.id.btnSaveImage);
 
         sharedPreferences = getSharedPreferences("mypref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -122,13 +121,18 @@ public class SetupActivity extends AppCompatActivity{
             @Override
             public void setQuestionImage(String question_image_url) {
 
-                String image_addr = "/storage/emulated/0/Android/data/com.example.newyear/files/Images/question_image_6.jpg";
+//                String image_addr = "/storage/emulated/0/Android/data/com.example.newyear/files/Images/question_image_6.jpg";
+                String image_addr = getApplicationContext().getExternalFilesDir(null).toString()+
+                        "/Images/question_image_"+
+                        String.valueOf(tvQuestionNumber.getText().toString())+
+                        ".jpg";
                 File imgFile = new File(image_addr);
                 if(imgFile.exists()){
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                     ImageView myImage = (ImageView) findViewById(R.id.ivOldImage);
                     myImage.setImageBitmap(myBitmap);
                 }
+
 
 //                SetImage setImage = new SetImage() {
 //                    @Override
@@ -202,35 +206,35 @@ public class SetupActivity extends AppCompatActivity{
             }
         });
 
-        btnSaveImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BitmapDrawable drawable = (BitmapDrawable) ivNewImage.getDrawable();
-                Bitmap bitmap = drawable.getBitmap();
-                File parent = new File(getApplicationContext().getExternalFilesDir(null),"/Images/");
-                parent.mkdirs();
-                String qNum = tvQuestionNumber.getText().toString();
-                File file = new File(parent, "question_image_"+qNum+".jpg");
-                try {
-                    outputStream = new FileOutputStream(file);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                Toast.makeText(getApplicationContext(), file.getAbsolutePath() + " saved", Toast.LENGTH_SHORT).show();
-                try {
-                    outputStream.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
+//        btnSaveImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                BitmapDrawable drawable = (BitmapDrawable) ivNewImage.getDrawable();
+//                Bitmap bitmap = drawable.getBitmap();
+//                File parent = new File(getApplicationContext().getExternalFilesDir(null),"/Images/");
+//                parent.mkdirs();
+//                String qNum = tvQuestionNumber.getText().toString();
+//                File file = new File(parent, "question_image_"+qNum+".jpg");
+//                try {
+//                    outputStream = new FileOutputStream(file);
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+//                Toast.makeText(getApplicationContext(), file.getAbsolutePath() + " saved", Toast.LENGTH_SHORT).show();
+//                try {
+//                    outputStream.flush();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                try {
+//                    outputStream.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        });
 
         btnUpdateQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -317,6 +321,9 @@ public class SetupActivity extends AppCompatActivity{
                 etNewQuestion.setText("");
                 etPlayer.setText("");
                 etIMageURL.setText("");
+                BitmapDrawable drawable = (BitmapDrawable) ivNewImage.getDrawable();
+                SaveImage saveImage = new SaveImage(getApplicationContext(), drawable);
+                saveImage.ToStorage("question_image_"+String.valueOf(tvQuestionNumber)+".jpg");
                 Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
             }
         }
@@ -353,21 +360,21 @@ public class SetupActivity extends AppCompatActivity{
     private void initQuestion() {
 
         String[] sQuestions = {
-                "15+56", "Hao", DEFAULT_IMAGE_URL,
-                "什麼是顏色Green", "Rui", "https://i.ytimg.com/vi/xW2bjae5LPM/maxresdefault.jpg",
-                "什麼顏色是Brown", "Yuan", "https://i.ytimg.com/vi/xW2bjae5LPM/maxresdefault.jpg",
+                "6+9、15+1，哪個比較大", "Hao", "https://pic.17qq.com/uploads/qhswhqmhkky.jpeg",
+                "Pineapple是什麼水果", "Rui", "https://freedesignfile.com/upload/2019/09/Funny-fruit-cartoon-emoticon-vector.jpg",
+                "什麼顏色是Red", "Yuan", "https://i.ytimg.com/vi/xW2bjae5LPM/maxresdefault.jpg",
                 "阿嬤的名字", "Hao", "https://avatarfiles.alphacoders.com/152/152686.jpg",
-                "下面有幾顆氣球", "Rui", "https://fs1.shop123.com.tw/300095/upload/product/3000955142pic_outside_393412.jpg",
-                "什麼動物有4隻腳", "Yuan", DEFAULT_IMAGE_URL,
+                "蝌蚪長大變什麼", "Rui", "https://hendrickscountyparks.org/wp-content/uploads/2020/01/tadpole-2.jpg",
+                "什麼動物有4隻腳", "Yuan", "https://assets.stickpng.com/images/580b57fcd9996e24bc43c319.png",
                 "關於蘋果的祝福話", "Hao", "https://i2.wp.com/ceklog.kindel.com/wp-content/uploads/2013/02/firefox_2018-07-10_07-50-11.png",
-                "Michael是誰", "Rui", "https://i.ebayimg.com/images/g/p5AAAOSw~gRVwlC5/s-l400.jpg",
-                "哨子6的後面是什麼", "Yuan", DEFAULT_IMAGE_URL,
-                "5,10,__,20,25", "Hao", "https://i1.wp.com/anime01kingdom.com/wp-content/uploads/2020/01/Screenshot-2020-01-20-at-11.26.18-PM.png?fit=1314%2C747&ssl=1",
-                "什麼是Truck", "Rui", "https://www.pngkey.com/png/detail/392-3928673_lightning-mcqueen-cars-car-cartoon.png",
-                "Bee吃什麼", "Yuan", "https://avatarfiles.alphacoders.com/152/152686.jpg",
+                "Michael的生日是幾月幾號", "Rui", "https://i.ebayimg.com/images/g/p5AAAOSw~gRVwlC5/s-l400.jpg",
+                "蝴蝶3的後面是什麼", "Yuan", "https://ku.90sjimg.com/element_origin_min_pic/18/03/29/4d88543d17b9584a4951675a5420b9ce.jpg",
+                "5,10,__,20,25", "Hao", "https://www.mymathtables.com/tips-and-tricks/img/5-table-icon.png",
+                "下面有幾顆氣球", "Rui", "https://fs1.shop123.com.tw/300095/upload/product/3000955142pic_outside_393412.jpg",
+                "Bee吃什麼", "Yuan", "https://freedesignfile.com/upload/2019/09/Illustration-cartoon-cute-bee-vector.jpg",
                 "下面圖案是幾點鐘", "Hao", "https://www.ikea.com/mx/en/images/products/tjalla-wall-clock__0633571_PE695905_S5.JPG",
                 "2張貼紙要再加上幾張，才會變成3張貼紙", "Rui", "https://png.pngtree.com/png-vector/20190130/ourlarge/pngtree-cartoon-carrot-sticker-sticker-png-image_590062.jpg",
-                "什麼是數字Three", "Yuan", "https://img.freepik.com/free-vector/cartoon-kids-with-123-numbers_97632-620.jpg?size=338&ext=jpg",
+                "什麼數字是Three", "Yuan", "https://img.freepik.com/free-vector/cartoon-kids-with-123-numbers_97632-620.jpg?size=338&ext=jpg",
         };
         class InitQuestion extends AsyncTask<String, Void, Void> {
 
@@ -420,6 +427,23 @@ public class SetupActivity extends AppCompatActivity{
 //            Log.d("QArray", sQuestions[i * 3] + " " + String.valueOf(i));
             InitQuestion initQuestion = new InitQuestion();
             initQuestion.execute(sQ);
+
+            SetImage setImage = new SetImage() {
+                @Override
+                public void SetImageView(Bitmap bitmap) {
+                    ivOldImage.setImageBitmap(bitmap);
+                    BitmapDrawable drawable = (BitmapDrawable) ivOldImage.getDrawable();
+                    SaveImage saveImage = new SaveImage(getApplicationContext(), drawable);
+                    saveImage.ToStorage("question_image_"+String.valueOf(current_question_number+1)+".jpg");
+                    Log.d("ResetQ2", "qi_"+String.valueOf(current_question_number+1));
+                    current_question_number = current_question_number + 1;
+                    if (current_question_number==15) {
+                        current_question_number=0;
+                    }
+                }
+            };
+            LoadImageURL loadImageURL = new LoadImageURL(setImage);
+            loadImageURL.execute(sQuestions[i * 3 + 2]);
         }
         Toast.makeText(getApplicationContext(), "Database Init", Toast.LENGTH_LONG).show();
     }

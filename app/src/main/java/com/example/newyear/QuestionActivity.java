@@ -7,6 +7,7 @@ import androidx.core.app.NavUtils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
 
 public class QuestionActivity extends AppCompatActivity {
 
@@ -85,16 +88,27 @@ public class QuestionActivity extends AppCompatActivity {
 
             @Override
             public void setQuestionImage(String question_image_url) {
-//                LoadImageURL loadImageURL = new LoadImageURL(ivImage);
+////                LoadImageURL loadImageURL = new LoadImageURL(ivImage);
+////                loadImageURL.execute(question_image_url);
+//                SetImage setImage = new SetImage() {
+//                    @Override
+//                    public void SetImageView(Bitmap bitmap) {
+//                        ivImage.setImageBitmap(bitmap);
+//                    }
+//                };
+//                LoadImageURL loadImageURL = new LoadImageURL(setImage);
 //                loadImageURL.execute(question_image_url);
-                SetImage setImage = new SetImage() {
-                    @Override
-                    public void SetImageView(Bitmap bitmap) {
-                        ivImage.setImageBitmap(bitmap);
-                    }
-                };
-                LoadImageURL loadImageURL = new LoadImageURL(setImage);
-                loadImageURL.execute(question_image_url);
+
+                String image_addr = getApplicationContext().getExternalFilesDir(null).toString()+
+                        "/Images/question_image_"+
+                        String.valueOf(tvQuestionNumber.getText().toString())+
+                        ".jpg";
+                File imgFile = new File(image_addr);
+                if(imgFile.exists()){
+                    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+                    ImageView myImage = (ImageView) findViewById(R.id.ivImage);
+                    myImage.setImageBitmap(myBitmap);
+                }
             }
         };
         loadQuestionDB = new LoadQuestionDB(setQuestion);

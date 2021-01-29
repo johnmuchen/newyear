@@ -40,20 +40,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingRight="5dp"
-                android:text="TextView" />
+                android:text="Number" />
 
             <TextView
                 android:id="@+id/tvPlayer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingRight="5dp"
-                android:text="TextView" />
+                android:text="Player" />
 
             <Button
                 android:id="@+id/btnPlayerVisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Player Visible" />
+                android:text="Visible" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -107,8 +108,8 @@
 
             <ImageView
                 android:id="@+id/ivNewImage"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
                 app:srcCompat="@drawable/question_mark" />
 
             <LinearLayout
@@ -141,12 +142,6 @@
                         android:layout_height="wrap_content"
                         android:text="Default Image URL" />
 
-                    <Button
-                        android:id="@+id/btnSaveImage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Save Image" />
                 </LinearLayout>
 
             </LinearLayout>
